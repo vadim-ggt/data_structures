@@ -144,3 +144,81 @@ void list_remove(LinkedList* list, int index, void (*free_data)(void*))
 	list->size--;
 
 }
+
+void list_clear(LinkedList* list, void(*free_data)(void*))
+{
+
+	if (!list) return;
+
+	Node* current = list->head;
+	while (current != NULL) {
+
+		Node* next = current->next;
+
+		if (free_data) {
+			free_data(current->data);
+		}
+
+		free(current);
+		current = next;
+	}
+
+	list->head = NULL;
+	list->size = 0;
+
+}
+
+
+int list_find(LinkedList* list, void* value, int(*cmp)(void*, void*))
+{
+
+	if (!list || !cmp) return -1;
+
+	Node* current = list->head;
+	int index=0;
+	while (current != NULL) {
+		
+		Node* next = current->next;
+
+		if (cmp(value, current->data) == 0) return index;
+		
+		current = next;
+		index++;
+	}
+
+	return 0;
+}
+
+int list_remove_value(LinkedList* list, void* value, int(*cmp)(void*, void*), void(*free_data)(void*))
+{
+
+	if (!list || !cmp) return -1;
+
+	Node* current = list->head;
+	Node* prev = NULL;
+	while (current != NULL) {
+
+		if (cmp(value, current->data) == 0) {
+
+			if (prev == NULL) {
+				list->head = current->next;
+			}
+			else {
+				prev->next = current->next;
+
+			}
+
+			if (free_data) free_data(current->data);
+
+			free(current);
+			list->size--;
+			return 0;
+		}
+
+		prev = current;
+		current = current->next;
+
+	}
+
+	return -1;
+}
