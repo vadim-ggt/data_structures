@@ -222,3 +222,37 @@ int list_remove_value(LinkedList* list, void* value, int(*cmp)(void*, void*), vo
 
 	return -1;
 }
+
+int list_conteins(LinkedList* list, void* value, int(*cmp)(void*, void*))
+{
+
+	if (!list || !cmp) return -1;
+
+	Node* current = list->head;
+	while (current != NULL) {
+
+		if (cmp(value, current->data) == 0) return 1;
+		current = current->next;
+
+	}
+
+	return 0;
+}
+
+void list_reverse(LinkedList* list)
+{
+	if (!list) return;
+
+	Node* current = list->head;
+	Node* prev = NULL;
+	Node* next = NULL;
+
+	while (current != NULL) {
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+	list->head = prev;
+
+}
