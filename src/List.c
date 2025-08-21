@@ -67,7 +67,6 @@ size_t list_size(LinkedList* list)
 }
 
 
-
 void* list_get(LinkedList* list, int index)
 {
 	if (!list || index < 0 || index >= (int)list->size) return NULL;
@@ -77,7 +76,6 @@ void* list_get(LinkedList* list, int index)
 
 	return current ? current->data : NULL;
 }
-
 
 
 void list_insert(LinkedList* list, int index, void* value)
@@ -145,6 +143,7 @@ void list_remove(LinkedList* list, int index, void (*free_data)(void*))
 
 }
 
+
 void list_clear(LinkedList* list, void(*free_data)(void*))
 {
 
@@ -189,6 +188,7 @@ int list_find(LinkedList* list, void* value, int(*cmp)(void*, void*))
 	return 0;
 }
 
+
 int list_remove_value(LinkedList* list, void* value, int(*cmp)(void*, void*), void(*free_data)(void*))
 {
 
@@ -223,6 +223,7 @@ int list_remove_value(LinkedList* list, void* value, int(*cmp)(void*, void*), vo
 	return -1;
 }
 
+
 int list_conteins(LinkedList* list, void* value, int(*cmp)(void*, void*))
 {
 
@@ -238,6 +239,7 @@ int list_conteins(LinkedList* list, void* value, int(*cmp)(void*, void*))
 
 	return 0;
 }
+
 
 void list_reverse(LinkedList* list)
 {
@@ -255,4 +257,38 @@ void list_reverse(LinkedList* list)
 	}
 	list->head = prev;
 
+}
+
+
+LinkedList* list_copy(LinkedList* src, void* (*copy_data)(void*), void (*free_data)(void*))
+{
+	if (!src) return NULL;
+
+	LinkedList* new_list = list_create();
+	if (!new_list) return NULL;
+
+	Node* current = src->head;
+	while (current != NULL) {
+
+		void* new_data;
+		if (copy_data) {
+			new_data = copy_data(current->data);
+		}
+		else new_data = current->data;
+
+		if (list_append(new_list, new_data) != 0) {
+		
+			if (copy_data && free_data) {
+				free_data(new_data);
+			}
+
+			list_free(new_list, free_data);
+			return NULL;
+		}
+		
+		current = current->next;
+
+	}
+
+	return new_list;
 }
