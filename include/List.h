@@ -40,3 +40,6 @@ int list_conteins(LinkedList* list, void* value, int (*cmp)(void*, void*));
 
 void list_reverse(LinkedList* list);
 
+LinkedList* list_copy(LinkedList* src, void* (*copy_data)(void*), void (*free_data)(void*));
+
+
